@@ -10,96 +10,195 @@
   <script src="session-ui.js" defer></script>
   <script src="app.js" defer></script>
 </head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <h1>💪 Gym Tracker</h1>
-    <div class="header-actions">
-      <button class="btn btn-primary" id="new-session-btn">+ New Session</button>
-    </div>
-  </header>
+  <body class="preload">
+    <!-- Header -->
+    <header class="header">
+      <h1>💪 Gym Tracker</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" id="new-session-btn">
+          + New Session
+        </button>
+      </div>
+    </header>
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-item active" data-view="dashboard">Dashboard</div>
-    <div class="nav-item" data-view="calendar">Calendar</div>
-    <div class="nav-item" data-view="session">Current Session</div>
-  </nav>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-item" data-view="dashboard">Dashboard</div>
+      <div class="nav-item" data-view="calendar">Calendar</div>
+      <div class="nav-item" data-view="session">Current Session</div>
+    </nav>
 
-  <!-- Main Container -->
-  <main class="container">
-    <!-- Dashboard View -->
-    <div id="dashboard-view">
-      <div class="dashboard-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Sessions</div>
-          <div class="stat-value" id="total-sessions">0</div>
+    <!-- Main Container -->
+    <main class="container">
+      <!-- Dashboard View -->
+      <div id="dashboard-view">
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Sessions</div>
+            <div class="stat-value" id="total-sessions">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">This Week</div>
+            <div class="stat-value" id="week-sessions">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Current Streak</div>
+            <div class="stat-value" id="current-streak">0</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">This Week</div>
-          <div class="stat-value" id="week-sessions">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Current Streak</div>
-          <div class="stat-value" id="current-streak">0</div>
+
+        <div class="recent-sessions">
+          <h2 class="section-title">Recent Sessions</h2>
+          <div id="recent-sessions-list">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p>No sessions yet. Start your first workout!</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="recent-sessions">
-        <h2 class="section-title">Recent Sessions</h2>
-        <div id="recent-sessions-list">
+      <!-- Calendar View - Integration Point -->
+      <div id="calendar-view">
+        <div class="calendar-header">
+          <button id="prev-month">‹ Previous</button>
+          <button id="current-month" class="calendar-title" type="button">
+            January 2026
+          </button>
+          <button id="next-month">Next ›</button>
+        </div>
+        <div class="calendar-weekdays">
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+          <div class="weekday">Sun</div>
+        </div>
+        <div id="calendar-grid"></div>
+        <div id="year-grid" style="display: none"></div>
+      </div>
+
+      <!-- Session View - Integration Point -->
+      <div id="session-view">
+        <div class="session-header">
+          <div>
+            <h2 class="section-title" id="session-title">Workout Session</h2>
+            <div class="session-info">
+              <span id="session-date">Today</span>
+              <span id="session-duration">0:00:00</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem">
+            <button class="btn btn-secondary" id="end-session-btn">
+              End Session
+            </button>
+            <button class="btn btn-primary" id="add-exercise-btn">
+              + Add Exercise
+            </button>
+          </div>
+        </div>
+
+        <div class="exercises-container" id="exercises-container">
           <div class="empty-state">
-            <div class="empty-state-icon">📋</div>
-            <p>No sessions yet. Start your first workout!</p>
+            <div class="empty-state-icon">🏋️</div>
+            <p>No exercises added yet. Click "Add Exercise" to start!</p>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calendar View - Integration Point -->
-    <div id="calendar-view">
-      <div class="calendar-header">
-        <h2 class="section-title">Workout Calendar</h2>
-        <div class="calendar-controls">
-          <button class="btn btn-secondary" id="prev-month">‹ Previous</button>
-          <span id="current-month">January 2026</span>
-          <button class="btn btn-secondary" id="next-month">Next ›</button>
-        </div>
-      </div>
-      <div class="calendar-grid">
-        <div class="calendar-placeholder">
-          <div class="empty-state">
-            <div class="empty-state-icon">📅</div>
-            <p>Calendar view - Integration point for calendar implementation</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Session View - Integration Point -->
-    <div id="session-view">
-      <div class="session-header">
-        <div>
-          <h2 class="section-title" id="session-title">Workout Session</h2>
-          <div class="session-info">
-            <span id="session-date">Today</span>
-            <span id="session-duration">0:00:00</span>
-          </div>
-        </div>
-        <div style="display: flex; gap: 0.75rem;">
-          <button class="btn btn-secondary" id="end-session-btn">End Session</button>
-          <button class="btn btn-primary" id="add-exercise-btn">+ Add Exercise</button>
-        </div>
-      </div>
-
-      <div class="exercises-container" id="exercises-container">
-        <div class="empty-state">
-          <div class="empty-state-icon">🏋️</div>
-          <p>No exercises added yet. Click "Add Exercise" to start!</p>
         </div>
       </div>
     </div>
   </main>
-
 </body>
+    </main>
+    <script src="service.js" defer></script>
+    <script src="calendar.js" defer></script>
+    <script>
+      // Navigation click handlers
+      document.querySelectorAll('.nav-item').forEach((item) => {
+        item.addEventListener('click', () => {
+          showView(item.dataset.view);
+        });
+      });
+
+      // ============================================
+      // SESSION MANAGEMENT - Integration Points
+      // ============================================
+
+      // Hook: Start new session
+      document
+        .getElementById('new-session-btn')
+        .addEventListener('click', () => {
+          console.log('🔗 Integration Point: Start new session');
+          // TODO: Implement session creation logic
+          showView('session');
+        });
+
+      // Hook: End session
+      document
+        .getElementById('end-session-btn')
+        .addEventListener('click', () => {
+          console.log('🔗 Integration Point: End session');
+          // TODO: Implement session completion logic
+          showView('dashboard');
+        });
+
+      // ============================================
+      // EXERCISE MANAGEMENT - Integration Points
+      // ============================================
+
+      // Hook: Add exercise to current session
+      document
+        .getElementById('add-exercise-btn')
+        .addEventListener('click', () => {
+          console.log('🔗 Integration Point: Add exercise');
+          // TODO: Implement exercise selection/addition
+          // This is where you'd show a modal or form to add exercises
+          addExercisePlaceholder();
+        });
+
+      // Placeholder function to demonstrate exercise card structure
+      function addExercisePlaceholder() {
+        const container = document.getElementById('exercises-container');
+
+        // Remove empty state if present
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) {
+          emptyState.remove();
+        }
+
+        const exerciseCard = document.createElement('div');
+        exerciseCard.className = 'exercise-card';
+        exerciseCard.innerHTML = `
+        <div class="exercise-header">
+          <div class="exercise-name">Bench Press</div>
+          <button class="btn btn-secondary btn-icon">×</button>
+        </div>
+        <div class="sets-container">
+          <div class="set-row">
+            <span class="set-label">Set 1</span>
+            <input type="number" placeholder="Weight" value="60">
+            <input type="number" placeholder="Reps" value="10">
+            <input type="number" placeholder="RIR" value="2">
+            <button class="btn btn-secondary btn-icon">✓</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="margin-top: 0.75rem;">+ Add Set</button>
+      `;
+        container.appendChild(exerciseCard);
+      }
+
+      // ============================================
+      // DASHBOARD DATA - Integration Points
+      // ============================================
+
+      function updateDashboard() {
+        // TODO: Calculate and update stats from actual session data
+        document.getElementById('total-sessions').textContent =
+          appState.sessions.length;
+        document.getElementById('week-sessions').textContent = '0';
+        document.getElementById('current-streak').textContent = '0';
+      }
+    </script>
+  </body>
 </html>
