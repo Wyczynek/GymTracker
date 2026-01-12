@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gym Tracker</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gym Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
   <body class="preload">
     <!-- Header -->
     <header class="header">
-      <h1>💪 Gym Tracker</h1>
+      <h1>
+        <i class="fa-solid fa-dumbbell" style="color: white"></i> Gym Tracker
+      </h1>
     </header>
 
     <!-- Navigation -->
@@ -18,7 +30,6 @@
       <div class="nav-item" data-view="calendar">Calendar</div>
       <div class="nav-item" data-view="session">Current Session</div>
       <div class="nav-item" data-view="inspiration">Inspiration</div>
-
     </nav>
 
     <!-- Main Container -->
@@ -100,7 +111,7 @@
           </div>
         </div>
       </div>
-              <!-- Inspiration View -->
+      <!-- Inspiration View -->
       <div id="inspiration-view">
         <div class="inspiration-header">
           <h2 class="section-title">Inspiration</h2>
@@ -121,7 +132,9 @@
               <select id="ex-type">
                 <option value="">(any)</option>
                 <option value="cardio">cardio</option>
-                <option value="olympic_weightlifting">olympic_weightlifting</option>
+                <option value="olympic_weightlifting">
+                  olympic_weightlifting
+                </option>
                 <option value="plyometrics">plyometrics</option>
                 <option value="powerlifting">powerlifting</option>
                 <option value="strength">strength</option>
@@ -165,12 +178,24 @@
 
             <label class="inspiration-field">
               <span>Equipment</span>
-              <input id="ex-equipment" type="text" placeholder="e.g. dumbbell" />
+              <input
+                id="ex-equipment"
+                type="text"
+                placeholder="e.g. dumbbell"
+              />
             </label>
 
             <div class="inspiration-actions">
-              <button class="btn btn-primary" type="submit">Send Request</button>
-              <button class="btn btn-secondary" type="button" id="clear-results">Clear</button>
+              <button class="btn btn-primary" type="submit">
+                Send Request
+              </button>
+              <button
+                class="btn btn-secondary"
+                type="button"
+                id="clear-results"
+              >
+                Clear
+              </button>
             </div>
           </form>
         </div>
@@ -184,27 +209,73 @@
         </div>
       </div>
     </main>
-  <!-- Exercise details modal -->
-<div id="exercise-modal" class="modal-backdrop" aria-hidden="true">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-header">
-      <h3 id="modal-title" class="modal-title">Exercise</h3>
-      <button id="modal-close" class="btn btn-secondary btn-icon" type="button">×</button>
-    </div>
+    <!-- Exercise details modal -->
+    <div id="exercise-modal" class="modal-backdrop" aria-hidden="true">
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div class="modal-header">
+          <h3 id="modal-title" class="modal-title">Exercise</h3>
+          <button
+            id="modal-close"
+            class="btn btn-secondary btn-icon"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
 
-    <div id="modal-body" class="modal-body"></div>
+        <div id="modal-body" class="modal-body"></div>
 
-    <div class="modal-footer">
-      <button id="modal-close-2" class="btn btn-secondary" type="button">Close</button>
+        <div class="modal-footer">
+          <button id="modal-close-2" class="btn btn-secondary" type="button">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+    <!-- Day sessions modal -->
+    <div id="day-modal" class="modal-backdrop" aria-hidden="true">
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="day-modal-title"
+      >
+        <div class="modal-header">
+          <h3 id="day-modal-title" class="modal-title">Sessions</h3>
+          <button
+            id="day-modal-close"
+            class="btn btn-secondary btn-icon"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="day-modal-content"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            id="day-modal-close-2"
+            class="btn btn-secondary"
+            type="button"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="exercise.js"></script>
     <script src="session.js"></script>
     <script src="session-ui.js"></script>
     <script src="app.js"></script>
-    <script src="service.js"></script>
     <script src="calendar.js"></script>
     <script src="inspiration.js"></script>
   </body>

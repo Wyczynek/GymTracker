@@ -59,6 +59,189 @@ function getSessionsForDate(isoDate) {
         return sessionDate === isoDate;
     });
 }
+function getAllSessions() {
+    const data = localStorage.getItem('gymTrackerSessions');
+    try {
+        const arr = data ? JSON.parse(data) : [];
+        return Array.isArray(arr) ? arr : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveAllSessions(sessions) {
+    localStorage.setItem('gymTrackerSessions', JSON.stringify(sessions));
+}
+
+function deleteSessionById(id) {
+    const sessions = getAllSessions();
+    const next = sessions.filter((s) => String(s.id) !== String(id));
+    saveAllSessions(next);
+}
+function esc(str) {
+    return String(str ?? '').replace(
+        /[&<>"']/g,
+        (m) =>
+            ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+            }[m])
+    );
+}
+
+function renderSessionDetailsHTML(session) {
+    const exercises = Array.isArray(session.exercises) ? session.exercises : [];
+
+    if (exercises.length === 0) {
+        return `<div class="muted">No exercises recorded.</div>`;
+    }
+
+    return exercises
+        .map((ex, exIndex) => {
+            const sets = Array.isArray(ex.sets) ? ex.sets : [];
+
+            const setsHtml = sets.length
+                ? sets
+                      .map(
+                          (set, i) => `
+          <div class="set-row-details">
+            <div class="set-chip">Set ${i + 1}</div>
+            <div class="set-fields">
+              <span><b>Weight:</b> ${esc(set.weight ?? 0)} kg</span>
+              <span><b>Reps:</b> ${esc(set.reps ?? 0)}</span>
+              <span><b>RIR:</b> ${esc(set.rir ?? 0)}</span>
+            </div>
+          </div>
+        `
+                      )
+                      .join('')
+                : `<div class="muted">No sets.</div>`;
+
+            return `
+      <div class="exercise-details">
+        <div class="exercise-details-title">${esc(
+            ex.name || `Exercise ${exIndex + 1}`
+        )}</div>
+        <div class="exercise-details-sets">
+          ${setsHtml}
+        </div>
+      </div>
+    `;
+        })
+        .join('');
+}
+
+function openDayModal(isoDate) {
+    const modal = document.getElementById('day-modal');
+    const title = document.getElementById('day-modal-title');
+    const content = document.getElementById('day-modal-content');
+
+    const sessions = getSessionsForDate(isoDate);
+
+    title.textContent = `Sessions • ${isoDate}`;
+    content.innerHTML = '';
+
+    if (!sessions.length) {
+        content.innerHTML = `
+      <div class="empty-state" style="padding:1.5rem;">
+        <div class="empty-state-icon">📭</div>
+        <p>No sessions for this day.</p>
+      </div>
+    `;
+    } else {
+        sessions.forEach((s) => {
+            const item = document.createElement('div');
+            item.className = 'session-item';
+            const dateStr = (s.date || '').split('T')[0] || isoDate;
+            const exercisesCount = Array.isArray(s.exercises)
+                ? s.exercises.length
+                : 0;
+
+            item.innerHTML = `
+            <div class="session-item-left">
+                <div class="session-item-title">Workout Session</div>
+                <div class="session-item-meta">${dateStr} • Exercises: ${exercisesCount}</div>
+            </div>
+
+            <div class="session-item-actions">
+                <button class="btn btn-secondary" data-action="show">Show</button>
+                <button class="btn btn-secondary" data-action="delete">Delete</button>
+            </div>
+
+            <div class="session-details" style="display:none; margin-top:12px;"></div>
+            `;
+
+            // DELETE
+            item.querySelector('[data-action="delete"]').addEventListener(
+                'click',
+                () => {
+                    deleteSessionById(s.id);
+                    openDayModal(isoDate);
+                    rerenderCalendarCurrentView();
+                    updateDashboard();
+                }
+            );
+
+            // SHOW (toggle details)
+            item.querySelector('[data-action="show"]').addEventListener(
+                'click',
+                () => {
+                    const detailsEl = item.querySelector('.session-details');
+                    const btn = item.querySelector('[data-action="show"]');
+
+                    const isOpen = detailsEl.style.display === 'block';
+
+                    if (isOpen) {
+                        detailsEl.style.display = 'none';
+                        btn.textContent = 'Show';
+                        return;
+                    }
+
+                    // zbuduj HTML szczegółów
+                    detailsEl.innerHTML = renderSessionDetailsHTML(s);
+                    detailsEl.style.display = 'block';
+                    btn.textContent = 'Hide';
+                }
+            );
+
+            content.appendChild(item);
+        });
+    }
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeDayModal() {
+    const modal = document.getElementById('day-modal');
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+function initDayModalEvents() {
+    const modal = document.getElementById('day-modal');
+    const close1 = document.getElementById('day-modal-close');
+    const close2 = document.getElementById('day-modal-close-2');
+
+    close1.addEventListener('click', closeDayModal);
+    close2.addEventListener('click', closeDayModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target.id === 'day-modal') closeDayModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDayModal();
+    });
+}
+
+function rerenderCalendarCurrentView() {
+    if (calendarMode === 'month') renderMonth(currentMonth, currentYear);
+    else renderYear(currentYear);
+}
 
 // ---------- RENDER: MONTH ----------
 function renderMonth(month0, year) {
@@ -150,7 +333,7 @@ function makeDayTile({ year, month0, day, outside }) {
     }
 
     tile.addEventListener('click', () => {
-        console.log('Clicked:', iso, sessions);
+        openDayModal(iso);
     });
 
     return tile;
@@ -270,4 +453,6 @@ document.getElementById('current-month').addEventListener('click', () => {
 });
 
 // INIT
+initDayModalEvents();
+
 setMode('month');
