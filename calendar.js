@@ -46,9 +46,18 @@ function toISODate(year, month0, day) {
 }
 
 function getSessionsForDate(isoDate) {
-    const state = window.appState;
-    if (!state || !Array.isArray(state.sessions)) return [];
-    return state.sessions.filter((s) => s.date === isoDate);
+    // Load sessions from localStorage
+    const sessionsData = localStorage.getItem('gymTrackerSessions');
+    if (!sessionsData) return [];
+
+    const sessions = JSON.parse(sessionsData);
+    if (!Array.isArray(sessions)) return [];
+
+    return sessions.filter((s) => {
+        // Compare just the date part (YYYY-MM-DD)
+        const sessionDate = s.date.split('T')[0];
+        return sessionDate === isoDate;
+    });
 }
 
 // ---------- RENDER: MONTH ----------

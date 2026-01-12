@@ -1,77 +1,47 @@
-  // ============================================
+// ============================================
 // SESSION MANAGEMENT
 // ============================================
 
 class SessionManager {
   constructor() {
-    this.currentSession = null;
     this.exercises = [];
-    this.startTime = null;
-    this.timerInterval = null;
+    this.selectedDate = null;
   }
 
-  startNewSession() {
-    this.currentSession = {
-      id: Date.now(),
-      date: new Date().toISOString(),
-      startTime: Date.now(),
-      exercises: []
-    };
-    this.exercises = [];
-    this.startTime = Date.now();
-    this.startTimer();
-    this.updateSessionInfo();
-  }
+  initSession() {
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0];
+    this.selectedDate = dateStr;
 
-  startTimer() {
-    this.timerInterval = setInterval(() => {
-      const elapsed = Date.now() - this.startTime;
-      const hours = Math.floor(elapsed / 3600000);
-      const minutes = Math.floor((elapsed % 3600000) / 60000);
-      const seconds = Math.floor((elapsed % 60000) / 1000);
-
-      const timerElement = document.getElementById('session-duration');
-      if (timerElement) {
-        timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      }
-    }, 1000);
-  }
-
-  updateSessionInfo() {
-    const dateElement = document.getElementById('session-date');
-    if (dateElement) {
-      const today = new Date();
-      dateElement.textContent = today.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+    // Set date input to today
+    const dateInput = document.getElementById('session-date-input');
+    if (dateInput) {
+      dateInput.value = dateStr;
     }
   }
 
-  endSession() {
-    if (!this.currentSession) return null;
+  setSessionDate(dateStr) {
+    this.selectedDate = dateStr;
+  }
 
-    clearInterval(this.timerInterval);
-
-    this.currentSession.endTime = Date.now();
-    this.currentSession.duration = this.currentSession.endTime - this.currentSession.startTime;
-    this.currentSession.exercises = this.exercises.map(ex => ({...ex}));
+  saveSession() {
+    const session = {
+      id: Date.now(),
+      date: this.selectedDate || new Date().toISOString().split('T')[0],
+      exercises: this.exercises.map(ex => ({...ex}))
+    };
 
     // Save to local storage
     const sessions = this.getAllSessions();
-    sessions.push(this.currentSession);
+    sessions.push(session);
     localStorage.setItem('gymTrackerSessions', JSON.stringify(sessions));
 
-    const completedSession = {...this.currentSession};
+    const savedSession = {...session};
 
-    // Reset session
-    this.currentSession = null;
+    // Reset exercises for new session
     this.exercises = [];
-    this.startTime = null;
 
-    return completedSession;
+    return savedSession;
   }
 
   getAllSessions() {
@@ -81,25 +51,16 @@ class SessionManager {
 
   addExercise(exercise) {
     this.exercises.push(exercise);
-    if (this.currentSession) {
-      this.currentSession.exercises = this.exercises;
-    }
   }
 
   removeExercise(exerciseId) {
     this.exercises = this.exercises.filter(ex => ex.id !== exerciseId);
-    if (this.currentSession) {
-      this.currentSession.exercises = this.exercises;
-    }
   }
 
   updateExercise(exerciseId, updatedExercise) {
     const index = this.exercises.findIndex(ex => ex.id === exerciseId);
     if (index !== -1) {
       this.exercises[index] = {...this.exercises[index], ...updatedExercise};
-      if (this.currentSession) {
-        this.currentSession.exercises = this.exercises;
-      }
     }
   }
 }

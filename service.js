@@ -1,7 +1,6 @@
 window.appState = {
     currentView: 'dashboard',
     sessions: [],
-    currentSession: null,
     exercises: [],
 };
 
@@ -24,6 +23,11 @@ function showView(viewName) {
     });
 
     appState.currentView = viewName;
+
+    // Refresh calendar when switching to it
+    if (viewName === 'calendar' && typeof setMode === 'function') {
+        setMode('month');
+    }
 
     // ✅ ZAPIS WIDOKU
     localStorage.setItem('currentView', viewName);
@@ -51,10 +55,19 @@ function loadFromLocalStorage() {
 // ============================================
 
 loadFromLocalStorage();
-updateDashboard();
+if (typeof updateDashboard === 'function') {
+    updateDashboard();
+}
 
 const savedView = localStorage.getItem('currentView') || 'dashboard';
 showView(savedView);
+
+// Set date input to today by default
+const dateInput = document.getElementById('session-date-input');
+if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+}
 
 document.body.classList.remove('preload');
 

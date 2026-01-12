@@ -5,20 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gym Tracker</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="session.js" defer></script>
-  <script src="exercise.js" defer></script>
-  <script src="session-ui.js" defer></script>
-  <script src="app.js" defer></script>
 </head>
   <body class="preload">
     <!-- Header -->
     <header class="header">
       <h1>💪 Gym Tracker</h1>
-      <div class="header-actions">
-        <button class="btn btn-primary" id="new-session-btn">
-          + New Session
-        </button>
-      </div>
     </header>
 
     <!-- Navigation -->
@@ -87,17 +78,17 @@
         <div class="session-header">
           <div>
             <h2 class="section-title" id="session-title">Workout Session</h2>
-            <div class="session-info">
-              <span id="session-date">Today</span>
-              <span id="session-duration">0:00:00</span>
+            <div class="session-date-picker">
+              <label for="session-date-input">Session Date:</label>
+              <input type="date" id="session-date-input" />
             </div>
           </div>
           <div style="display: flex; gap: 0.75rem">
-            <button class="btn btn-secondary" id="end-session-btn">
-              End Session
-            </button>
             <button class="btn btn-primary" id="add-exercise-btn">
               + Add Exercise
+            </button>
+            <button class="btn btn-secondary" id="save-session-btn">
+              Save Session
             </button>
           </div>
         </div>
@@ -192,8 +183,7 @@
           <div id="exercise-results" class="exercise-results"></div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
   <!-- Exercise details modal -->
 <div id="exercise-modal" class="modal-backdrop" aria-hidden="true">
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -210,98 +200,12 @@
   </div>
 </div>
 
-</body>
-    </main>
-    <script src="service.js" defer></script>
-    <script src="calendar.js" defer></script>
-    <script src="inspiration.js" defer></script>
-
-    <script>
-      // Navigation click handlers
-      document.querySelectorAll('.nav-item').forEach((item) => {
-        item.addEventListener('click', () => {
-          showView(item.dataset.view);
-        });
-      });
-
-      // ============================================
-      // SESSION MANAGEMENT - Integration Points
-      // ============================================
-
-      // Hook: Start new session
-      document
-        .getElementById('new-session-btn')
-        .addEventListener('click', () => {
-          console.log('🔗 Integration Point: Start new session');
-          // TODO: Implement session creation logic
-          showView('session');
-        });
-
-      // Hook: End session
-      document
-        .getElementById('end-session-btn')
-        .addEventListener('click', () => {
-          console.log('🔗 Integration Point: End session');
-          // TODO: Implement session completion logic
-          showView('dashboard');
-        });
-
-      // ============================================
-      // EXERCISE MANAGEMENT - Integration Points
-      // ============================================
-
-      // Hook: Add exercise to current session
-      document
-        .getElementById('add-exercise-btn')
-        .addEventListener('click', () => {
-          console.log('🔗 Integration Point: Add exercise');
-          // TODO: Implement exercise selection/addition
-          // This is where you'd show a modal or form to add exercises
-          addExercisePlaceholder();
-        });
-
-      // Placeholder function to demonstrate exercise card structure
-      function addExercisePlaceholder() {
-        const container = document.getElementById('exercises-container');
-
-        // Remove empty state if present
-        const emptyState = container.querySelector('.empty-state');
-        if (emptyState) {
-          emptyState.remove();
-        }
-
-        const exerciseCard = document.createElement('div');
-        exerciseCard.className = 'exercise-card';
-        exerciseCard.innerHTML = `
-        <div class="exercise-header">
-          <div class="exercise-name">Bench Press</div>
-          <button class="btn btn-secondary btn-icon">×</button>
-        </div>
-        <div class="sets-container">
-          <div class="set-row">
-            <span class="set-label">Set 1</span>
-            <input type="number" placeholder="Weight" value="60">
-            <input type="number" placeholder="Reps" value="10">
-            <input type="number" placeholder="RIR" value="2">
-            <button class="btn btn-secondary btn-icon">✓</button>
-          </div>
-        </div>
-        <button class="btn btn-secondary" style="margin-top: 0.75rem;">+ Add Set</button>
-      `;
-        container.appendChild(exerciseCard);
-      }
-
-      // ============================================
-      // DASHBOARD DATA - Integration Points
-      // ============================================
-
-      function updateDashboard() {
-        // TODO: Calculate and update stats from actual session data
-        document.getElementById('total-sessions').textContent =
-          appState.sessions.length;
-        document.getElementById('week-sessions').textContent = '0';
-        document.getElementById('current-streak').textContent = '0';
-      }
-    </script>
+    <script src="exercise.js"></script>
+    <script src="session.js"></script>
+    <script src="session-ui.js"></script>
+    <script src="app.js"></script>
+    <script src="service.js"></script>
+    <script src="calendar.js"></script>
+    <script src="inspiration.js"></script>
   </body>
 </html>

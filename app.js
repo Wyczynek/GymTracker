@@ -40,29 +40,31 @@ document.querySelectorAll('.nav-item').forEach(item => {
 // SESSION MANAGEMENT
 // ============================================
 
-// Start new session
-document.getElementById('new-session-btn').addEventListener('click', () => {
-  sessionManager.startNewSession();
-  sessionUI.renderExercises();
-  showView('session');
-});
-
-// End session
-document.getElementById('end-session-btn').addEventListener('click', () => {
-  if (sessionManager.currentSession) {
-    if (confirm('Are you sure you want to end this session?')) {
-      const completedSession = sessionManager.endSession();
-      sessionUI.renderExercises();
-      updateDashboard();
-      showView('dashboard');
-      console.log('Session completed:', completedSession);
-    }
-  }
-});
+// Initialize session on load
+sessionManager.initSession();
 
 // Add exercise
 document.getElementById('add-exercise-btn').addEventListener('click', () => {
   sessionUI.showAddExerciseModal();
+});
+
+// Save session
+document.getElementById('save-session-btn').addEventListener('click', () => {
+  if (sessionManager.exercises.length === 0) {
+    alert('Please add at least one exercise before saving.');
+    return;
+  }
+
+  const completedSession = sessionManager.saveSession();
+  sessionUI.renderExercises();
+  updateDashboard();
+  alert('Session saved successfully!');
+  console.log('Session saved:', completedSession);
+});
+
+// Session date picker
+document.getElementById('session-date-input').addEventListener('change', (e) => {
+  sessionManager.setSessionDate(e.target.value);
 });
 
 // ============================================
@@ -136,27 +138,52 @@ function renderRecentSessions(sessions) {
 
   container.innerHTML = recentSessions.map(session => {
     const date = new Date(session.date);
-    const duration = session.duration ? formatDuration(session.duration) : 'N/A';
     const exerciseCount = session.exercises ? session.exercises.length : 0;
+    const exercisesList = session.exercises ? session.exercises.map(ex => {
+      const setsCount = ex.sets ? ex.sets.length : 0;
+      return `
+        <div class="exercise-item">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-sets">${setsCount} sets</div>
+        </div>
+      `;
+    }).join('') : '';
 
     return `
-      <div class="session-list-item">
-        <div class="session-date">${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</div>
-        <div class="session-meta">${exerciseCount} exercises • ${duration}</div>
+      <div class="session-list-item" data-session-id="${session.id}">
+        <div class="session-header-row" onclick="toggleSessionDetails(${session.id})">
+          <div>
+            <div class="session-date">${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</div>
+            <div class="session-meta">${exerciseCount} exercises</div>
+          </div>
+          <div class="session-toggle">▼</div>
+        </div>
+        <div class="session-details" id="session-details-${session.id}">
+          ${exercisesList || '<div class="no-exercises">No exercises recorded</div>'}
+        </div>
       </div>
     `;
   }).join('');
 }
 
-function formatDuration(ms) {
-  const hours = Math.floor(ms / 3600000);
-  const minutes = Math.floor((ms % 3600000) / 60000);
+function toggleSessionDetails(sessionId) {
+  const details = document.getElementById(`session-details-${sessionId}`);
+  const sessionItem = document.querySelector(`[data-session-id="${sessionId}"]`);
+  const toggle = sessionItem.querySelector('.session-toggle');
 
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
+  if (details.style.display === 'block') {
+    details.style.display = 'none';
+    toggle.textContent = '▼';
+    sessionItem.classList.remove('expanded');
+  } else {
+    details.style.display = 'block';
+    toggle.textContent = '▲';
+    sessionItem.classList.add('expanded');
   }
-  return `${minutes}m`;
 }
+
+window.toggleSessionDetails = toggleSessionDetails;
+
 
 // ============================================
 // CALENDAR INTEGRATION POINTS
