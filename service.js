@@ -10,6 +10,7 @@ function showView(viewName) {
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('calendar-view').style.display = 'none';
     document.getElementById('session-view').style.display = 'none';
+    document.getElementById('inspiration-view').style.display = 'none';
 
     // Show selected view
     document.getElementById(`${viewName}-view`).style.display = 'block';

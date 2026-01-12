@@ -26,6 +26,8 @@
       <div class="nav-item" data-view="dashboard">Dashboard</div>
       <div class="nav-item" data-view="calendar">Calendar</div>
       <div class="nav-item" data-view="session">Current Session</div>
+      <div class="nav-item" data-view="inspiration">Inspiration</div>
+
     </nav>
 
     <!-- Main Container -->
@@ -107,12 +109,113 @@
           </div>
         </div>
       </div>
+              <!-- Inspiration View -->
+      <div id="inspiration-view">
+        <div class="inspiration-header">
+          <h2 class="section-title">Inspiration</h2>
+          <p class="inspiration-subtitle">Find exercises using the API.</p>
+        </div>
+
+        <div class="inspiration-card">
+          <h3 class="inspiration-card-title">Parameters</h3>
+
+          <form id="exercise-form" class="inspiration-form">
+            <label class="inspiration-field">
+              <span>Name</span>
+              <input id="ex-name" type="text" placeholder="e.g. press" />
+            </label>
+
+            <label class="inspiration-field">
+              <span>Type</span>
+              <select id="ex-type">
+                <option value="">(any)</option>
+                <option value="cardio">cardio</option>
+                <option value="olympic_weightlifting">olympic_weightlifting</option>
+                <option value="plyometrics">plyometrics</option>
+                <option value="powerlifting">powerlifting</option>
+                <option value="strength">strength</option>
+                <option value="stretching">stretching</option>
+                <option value="strongman">strongman</option>
+              </select>
+            </label>
+
+            <label class="inspiration-field">
+              <span>Muscle</span>
+              <select id="ex-muscle">
+                <option value="">(any)</option>
+                <option value="abdominals">abdominals</option>
+                <option value="abductors">abductors</option>
+                <option value="adductors">adductors</option>
+                <option value="biceps">biceps</option>
+                <option value="calves">calves</option>
+                <option value="chest">chest</option>
+                <option value="forearms">forearms</option>
+                <option value="glutes">glutes</option>
+                <option value="hamstrings">hamstrings</option>
+                <option value="lats">lats</option>
+                <option value="lower_back">lower_back</option>
+                <option value="middle_back">middle_back</option>
+                <option value="neck">neck</option>
+                <option value="quadriceps">quadriceps</option>
+                <option value="traps">traps</option>
+                <option value="triceps">triceps</option>
+              </select>
+            </label>
+
+            <label class="inspiration-field">
+              <span>Difficulty</span>
+              <select id="ex-difficulty">
+                <option value="">(any)</option>
+                <option value="beginner">beginner</option>
+                <option value="intermediate">intermediate</option>
+                <option value="expert">expert</option>
+              </select>
+            </label>
+
+            <label class="inspiration-field">
+              <span>Equipment</span>
+              <input id="ex-equipment" type="text" placeholder="e.g. dumbbell" />
+            </label>
+
+            <div class="inspiration-actions">
+              <button class="btn btn-primary" type="submit">Send Request</button>
+              <button class="btn btn-secondary" type="button" id="clear-results">Clear</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="inspiration-card">
+          <div class="inspiration-output-header">
+            <h3 class="inspiration-card-title">Results</h3>
+            <span id="inspiration-status" class="inspiration-status"></span>
+          </div>
+          <div id="exercise-results" class="exercise-results"></div>
+        </div>
+      </div>
     </div>
   </main>
+  <!-- Exercise details modal -->
+<div id="exercise-modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h3 id="modal-title" class="modal-title">Exercise</h3>
+      <button id="modal-close" class="btn btn-secondary btn-icon" type="button">×</button>
+    </div>
+
+    <div id="modal-body" class="modal-body"></div>
+
+    <div class="modal-footer">
+      <button id="modal-close-2" class="btn btn-secondary" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
     </main>
     <script src="service.js" defer></script>
     <script src="calendar.js" defer></script>
+    <script src="inspiration.js" defer></script>
+
     <script>
       // Navigation click handlers
       document.querySelectorAll('.nav-item').forEach((item) => {
