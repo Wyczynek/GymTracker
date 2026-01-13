@@ -67,7 +67,6 @@ document.getElementById('save-session-btn').addEventListener('click', () => {
     const completedSession = sessionManager.saveSession();
     sessionUI.renderExercises();
     updateDashboard();
-    alert('Session saved successfully!');
     console.log('Session saved:', completedSession);
 });
 
